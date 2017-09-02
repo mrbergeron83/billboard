@@ -1,0 +1,28 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="./my-elements.html">
+
+<dom-module id="my-billboard">
+    <template>
+        <style include="granite-bootstrap"></style>
+        <style include="shared-styles">
+             :host {
+                display: block;
+
+                padding: 10px;
+            }
+        </style>
+
+        <h1>YOPOOO</h1>
+
+
+    </template>
+
+    <script>
+        class MyBillboard extends Polymer.Element {
+            static get is() { return 'my-billboard'; }
+        }
+
+        window.customElements.define(MyBillboard.is, MyBillboard);
+    </script>
+</dom-module>

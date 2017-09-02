@@ -1,0 +1,105 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<!-- shared styles for all views -->
+<dom-module id="shared-styles">
+  <template>
+    <style>
+      .header-bar {
+        background-color: var(--app-primary-color);
+        height: 80px;
+        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);
+      }
+
+      .header-title {
+        font-size: 20px;
+        font-weight: 500;
+        color: #fff;
+        height: 80px;
+        line-height: 80px;
+      }
+
+      .main-button {
+        color: #fff;
+        height: 50px;
+        width: 50px;
+        vertical-align: middle;
+        margin-top: 15px;
+      }
+
+      .menu-button {
+        height: 70px;
+        width: 70px;
+        background-color: var(--app-primary-color);
+        color: #fff;
+        font-weight: 500;
+        font-size: 10px;
+      }
+
+      .menu-item {
+        padding: 5px 0;
+      }
+
+      .dialog-container {
+        padding: 0 0;
+        margin: 0 0;
+        height: 80%;
+        width: 80%;
+        overflow-y: auto;
+      }
+
+      .scrollable::-webkit-scrollbar {
+        display: none;
+      }
+
+      .dialog-header {
+        background-color: var(--app-primary-color);
+        height: 40px;
+        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);        
+        margin-top: 0;
+        width: 100%;
+      }
+
+      .clear-margin {
+        padding: 0 0;
+        margin: 0 0;
+      }
+
+      .dialog-title {
+        font-size: 20px;
+        font-weight: 500;
+        color: #fff;
+        height: 20px;
+        line-height: 40px;
+      }
+
+      #termCheckbox {
+        --paper-checkbox-size: 15px;
+        margin: 25px 25px;
+      }
+
+      #submitButton {
+        background-color: var(--app-primary-color);
+        font-weight: 500;
+        color: #fff;
+        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);   
+        margin: 25px 25px;
+        cursor: pointer;
+      }
+      #submitButton[disabled],
+      #submitButton[toggles][active] {
+        background:gray;
+        color: lightgray;
+      }
+    </style>
+  </template>
+</dom-module>

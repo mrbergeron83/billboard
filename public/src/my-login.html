@@ -1,0 +1,47 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="./my-elements.html">
+
+<dom-module id="my-login">
+    <template>
+        <style include="granite-bootstrap"></style>
+        <style include="shared-styles">
+             :host {
+                display: block;
+                padding: 10px;
+            }
+        </style>
+        <div class="header-bar container-fluid">
+            <div class="row">
+                <div class="header-title col-xs-12">
+                    Login
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+    </template>
+    <script>
+        class MyLogin extends Polymer.Element {
+            static get is() {
+                return 'my-login';
+
+            }
+
+            ready() {
+                super.ready();
+                this.loginUser = {};
+            }
+
+
+        }
+        window.customElements.define(MyLogin.is, MyLogin);
+    </script>
+</dom-module>

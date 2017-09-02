@@ -1,0 +1,29 @@
+[debug] [2017-09-02T23:38:16.376Z] ----------------------------------------------------------------------
+[debug] [2017-09-02T23:38:16.379Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Sad Gnome\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase serve
+[debug] [2017-09-02T23:38:16.379Z] CLI Version:   3.10.0
+[debug] [2017-09-02T23:38:16.379Z] Platform:      win32
+[debug] [2017-09-02T23:38:16.379Z] Node Version:  v6.11.0
+[debug] [2017-09-02T23:38:16.380Z] Time:          Sat Sep 02 2017 19:38:16 GMT-0400 (Eastern Daylight Time)
+[debug] [2017-09-02T23:38:16.380Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-09-02T23:38:16.393Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-09-02T23:38:16.394Z] > authorizing via signed-in user
+[debug] [2017-09-02T23:38:16.396Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/billboard-2e06e  
+ Sat Sep 02 2017 19:38:16 GMT-0400 (Eastern Daylight Time)
+[debug] [2017-09-02T23:38:16.760Z] <<< HTTP RESPONSE 200
+[debug] [2017-09-02T23:38:16.761Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/billboard-2e06e/tokens  
+ Sat Sep 02 2017 19:38:16 GMT-0400 (Eastern Daylight Time)
+[debug] [2017-09-02T23:38:17.102Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'C:\Users\Sad Gnome\Workbench\billboard'...
+[info] 
+[debug] [2017-09-02T23:38:17.106Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/billboard-2e06e  
+ Sat Sep 02 2017 19:38:17 GMT-0400 (Eastern Daylight Time)
+[debug] [2017-09-02T23:38:17.384Z] <<< HTTP RESPONSE 200
+[debug] [2017-09-02T23:38:17.384Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/128032667198/clients/_:getWebAppConfig  
+ Sat Sep 02 2017 19:38:17 GMT-0400 (Eastern Daylight Time)
+[debug] [2017-09-02T23:38:17.722Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] +  hosting: Local server: http://localhost:5000
+
+[info] Shutting down...
