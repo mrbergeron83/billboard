@@ -12,8 +12,14 @@
                 padding: 10px;
             }
         </style>
+        <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
+        </firebase-auth>
 
-        <h1>YOPOOO</h1>
+        <h1>Hi! {{user.displayName}}</h1>
+        <h2>{{user.email}}</h2>
+        <h3>{{user.photoURL}}</h3>
+        <img src="{{user.photoURL}}?sz=64">
+        <paper-button raised on-tap="check">check</paper-button>
 
 
     </template>
@@ -21,7 +27,24 @@
     <script>
         class MyBillboard extends Polymer.Element {
             static get is() { return 'my-billboard'; }
+
+            static get properties() {
+                return {
+                    user: {
+                        type: Object
+                    }
+                }
+            }
+
+            check() {
+                var us = this.$.auth.user
+                console.log(us);
+            }
         }
+
+
+
+
 
         window.customElements.define(MyBillboard.is, MyBillboard);
     </script>

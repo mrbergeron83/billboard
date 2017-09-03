@@ -24,16 +24,24 @@
       }
     </style>
 
+    <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
+    </firebase-auth>
+
     <div class="header-bar container-fluid">
       <div class="row">
         <div class="header-title col-xs-6">
           Billboard
         </div>
         <div class="col-xs-6">
-          <paper-icon-button class="pull-right main-button" icon="menu" on-tap="toggleMenu"></paper-icon-button>
+          <template is="dom-if" if="[[user]]">
+            <img src="{{user.photoURL}}?sz=64" class="pull-right main-button user-avatar hoverable" icon="android" on-tap="logout">
+          </template>
+          <template is="dom-if" if="[[!user]]">
+            <paper-icon-button class="pull-right main-button" icon="pets" on-tap="login"></paper-icon-button>
+          </template>          
+          <iron-icon class="pull-right user-setting hoverable" icon="more-vert"></iron-icon>
+          <iron-icon class="pull-right ui-menu hoverable" icon="menu" on-tap="togglemenu"></iron-icon>
           <div>
-            <paper-icon-button class="pull-right main-button" icon="pets" on-tap="toggleLogin"></paper-icon-button>
-            </a>
           </div>
 
         </div>
@@ -41,7 +49,8 @@
 
     </div>
 
-    <paper-dialog id="menuDialog" class="dialog-container scrollable" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+    <paper-dialog id="menuDialog" class="dialog-container scrollable" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
+      with-backdrop>
 
       <div class="container-fluid">
         <paper-dialog-scrollable>
@@ -107,7 +116,8 @@
       </div>
     </paper-dialog>
 
-    <paper-dialog id="loginDialog" class="dialog-container scrollable" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+    <paper-dialog id="loginDialog" class="dialog-container scrollable" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
+      with-backdrop>
       <my-login class="clear-margin" on-init-main="init"></my-login>
     </paper-dialog>
 
@@ -123,12 +133,18 @@
 
   <iron-ajax id="getUser" url="/user" method="GET" handle-as="json" body="" content-type="application/json"></iron-ajax>
 
+  <firebase-app auth-domain="billboard-2e06e.firebaseapp.com" database-url="https://billboard-2e06e.firebaseio.com/" api-key="AIzaSyD2YZGsbuief-t5fZkfAHpI4jbKf8GPjiM">
+  </firebase-app>
+
   <script>
     class MyApp extends Polymer.Element {
       static get is() { return 'my-app'; }
 
       static get properties() {
         return {
+          user: {
+            type: Object
+          },
           page: {
             type: String,
             reflectToAttribute: true,
@@ -146,6 +162,14 @@
         return [
           '_routePageChanged(routeData.page)',
         ];
+      }
+
+      login() {
+        return this.$.auth.signInWithPopup();
+      }
+
+      logout() {
+        return this.$.auth.signOut();
       }
 
       _routePageChanged(page) {
@@ -176,7 +200,7 @@
           this.$.menuDialog.close();
         }
 
-      }      
+      }
 
       toggleLogin(e) {
         if (this.$.loginDialog.opened === false) {
@@ -186,8 +210,8 @@
         }
       }
 
-      init() {        
-       
+      init() {
+
       }
     }
 
