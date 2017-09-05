@@ -23,7 +23,9 @@
     "paper-input": "polymerelements/paper-input#^2.0.2",
     "paper-checkbox": "polymerelements/paper-checkbox#^2.0.1",
     "polymerfire": "firebase/polymerfire#^2.1.0",
-    "firebase": "^4.3.0"
+    "firebase": "^4.3.0",
+    "paper-card": "polymerelements/paper-card#^2.0.0",
+    "paper-fab": "polymerelements/paper-fab#^2.0.0"
   },
   "resolutions": {
     "polymer": "^2.0.0"

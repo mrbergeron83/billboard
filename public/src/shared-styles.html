@@ -17,9 +17,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .header-bar {
         background-color: var(--app-primary-color);
         height: 50px;
+        width: 100%;
         box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);
         padding-left: 1%;
         padding-right: 1%
+      }
+
+      .header-row {
+        width: 100%;
       }
 
       .user-setting {
@@ -27,11 +32,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 30px;
         margin-top: 10px;
         margin-right: 10px;
-        
       }
 
       .user-avatar {
-        border-radius: 50%;        
+        border-radius: 50%;
         outline: 0;
         vertical-align: top;
         height: 32px;
@@ -53,8 +57,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 30px;
         margin-top: 10px;
         margin-right: 10px;
-        
-        
       }
 
       .menu-button {
@@ -85,7 +87,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .dialog-header {
         background-color: var(--app-primary-color);
         height: 40px;
-        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);        
+        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);
         margin-top: 0;
         width: 100%;
       }
@@ -112,18 +114,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: var(--app-primary-color);
         font-weight: 500;
         color: #fff;
-        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);   
+        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);
         margin: 25px 25px;
         cursor: pointer;
       }
+
       #submitButton[disabled],
       #submitButton[toggles][active] {
-        background:gray;
+        background: gray;
         color: lightgray;
       }
 
       .hoverable {
         cursor: pointer;
+      }
+
+      .no-padding {
+        padding: 0;
+      }
+
+      .floating-button {
+        z-index: 1;
+        height: 50px;
+        width: 50px;
+        position: fixed;
+        background-color: #F44336;
+        bottom: 30px;
+        right: 30px;
+        cursor: pointer;
+        box-shadow: 0px 2px 5px #666;
       }
     </style>
   </template>

@@ -7,21 +7,54 @@
         <style include="granite-bootstrap"></style>
         <style include="shared-styles">
              :host {
-                display: block;
-
+                display: flex;
                 padding: 10px;
+                height: 95vh;
+                --paper-card-header-color: #eeeeee;
+                --paper-card-header: {
+                    background-color: #3F51B5;
+                }
+            }
+
+            .main-card {
+                display: block;
+                height: 100%;
+                width: 100%;
+                max-width: 800px;
             }
         </style>
         <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
         </firebase-auth>
 
-        <h1>Hi! {{user.displayName}}</h1>
-        <h2>{{user.email}}</h2>
-        <h3>{{user.photoURL}}</h3>
-        <img src="{{user.photoURL}}?sz=64">
-        <paper-button raised on-tap="check">check</paper-button>
+        <paper-card id="mainCard" class="main-card" heading="{{mainPost}}" image="" elevation="1" animated-shadow="false">
+            <div class="card-content">
+                <h1>[[mainPost]]</h1>
+                <div id="notes">
+                    <ul id="notes-list">
+                        <template is="dom-repeat" items="[[post]]" as="post">
+                            <li>
+                                <p class="content">[[post.content]]</p>
+                                <paper-icon-button icon="clear" note="[[note]]" on-tap="remove"></paper-icon-button>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </paper-card>
 
 
+        <paper-dialog id="postDialog" modal>
+            <h2>Dialog Title</h2>
+            <paper-dialog-scrollable>
+                <paper-input id="postTitle" label="Post Title..." required></paper-input>
+                <paper-input id="postContent" label="Message..." required></paper-input>
+                <div id="note-controls">
+                    <paper-button id="add" raised on-tap="add">Add</paper-button>
+                </div>
+            </paper-dialog-scrollable>
+        </paper-dialog>
+
+        <paper-fab class="floating-button" hidden$="[[test.0.$val]]" icon="add" on-tap="openPost"></paper-fab>
     </template>
 
     <script>
@@ -32,15 +65,29 @@
                 return {
                     user: {
                         type: Object
-                    }
+                    },
+                    notes: {
+                        type: Object
+                    },
+                    
+
                 }
             }
 
-            check() {
-                var us = this.$.auth.user
-                console.log(us);
-            }
+            ready() {
+                super.ready();
+                
+            }            
+
+            openPost() {
+                
+                this.$.postDialog.opened = true
+            }            
+
+            
         }
+
+
 
 
 

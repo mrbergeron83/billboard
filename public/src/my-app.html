@@ -17,22 +17,26 @@
     <style include="shared-styles"></style>
     <style>
        :host {
-        --app-primary-color: #4285f4;
+        --app-primary-color: #FF9800;
         --app-secondary-color: black;
 
         display: block;
       }
+
+      
     </style>
 
     <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
     </firebase-auth>
+    
+    
 
-    <div class="header-bar container-fluid">
-      <div class="row">
+    <div class="header-bar">
+      <div class="row header-row">
         <div class="header-title col-xs-6">
           Billboard
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-6 no-padding">
           <template is="dom-if" if="[[user]]">
             <img src="{{user.photoURL}}?sz=64" class="pull-right main-button user-avatar hoverable" icon="android" on-tap="logout">
           </template>
@@ -40,7 +44,7 @@
             <paper-icon-button class="pull-right main-button" icon="pets" on-tap="login"></paper-icon-button>
           </template>          
           <iron-icon class="pull-right user-setting hoverable" icon="more-vert"></iron-icon>
-          <iron-icon class="pull-right ui-menu hoverable" icon="menu" on-tap="togglemenu"></iron-icon>
+          <iron-icon class="pull-right ui-menu hoverable" icon="menu" on-tap="toggleMenu"></iron-icon>
           <div>
           </div>
 
@@ -165,7 +169,7 @@
       }
 
       login() {
-        return this.$.auth.signInWithPopup();
+        return this.$.auth.signInWithRedirect();
       }
 
       logout() {
@@ -200,14 +204,6 @@
           this.$.menuDialog.close();
         }
 
-      }
-
-      toggleLogin(e) {
-        if (this.$.loginDialog.opened === false) {
-          this.$.loginDialog.open();
-        } else {
-          this.$.login.close();
-        }
       }
 
       init() {
