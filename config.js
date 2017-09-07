@@ -1,5 +1,6 @@
-var config = {
-    url: "mongodb://admin:jx1919jx@ds145302.mlab.com:45302/billboard",
-    port: process.env.PORT || 3000    
+var configJS = {
+    port: process.env.PORT || 3000,
+    dbUrl: "mongodb://bbadmin:bbadmin@ds145302.mlab.com:45302/billboard"
 }
-module.exports = config;
+
+module.exports = configJS;

@@ -1,25 +1,38 @@
 var express = require('express'),
-app = express(),
-mongoose = require('mongoose'),
-config = require('./config'),
-router = express.Router(),
-bodyParser = require('body-parser');
+    app = express(),
+    mongoose = require('mongoose'),
+    configJS = require('./config'),
+    router = express.Router(),
+    Promise = require('bluebird'),
+    bodyParser = require('body-parser');
 
 
-var promise = mongoose.connect(config.url, {
+var Post = require('./models/post');
+var postRoutes = require('./routes/postroutes');
+var User = require('./models/user');
+var userRoutes = require('./routes/userroutes');
+
+
+mongoose.Promise = require('bluebird');
+mongoose.connect(configJS.dbUrl, {
     useMongoClient: true,
 });
 
 router.use(bodyParser.urlencoded({
     extended: true
 }));
+router.use(bodyParser.json());
 
 app.use(express.static('./public'));
+app.use('/post', postRoutes);
+app.use('/users', userRoutes);
 
 app.get('*', function (req, res) {
     res.sendFile('/public/index.html', { root: '.' });
 });
 
-app.listen(config.port, function () {
-    console.log("server running on port " + config.port);
+
+
+app.listen(configJS.port, function () {
+    console.log("server running on port " + configJS.port);
 });

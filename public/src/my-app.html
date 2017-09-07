@@ -22,14 +22,18 @@
 
         display: block;
       }
-
-      
     </style>
 
-    <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
+    <firebase-app auth-domain="billboard-2e06e.firebaseapp.com" database-url="https://billboard-2e06e.firebaseio.com/" api-key="AIzaSyD2YZGsbuief-t5fZkfAHpI4jbKf8GPjiM">
+    </firebase-app>
+
+    <firebase-auth id="auth" user="{{currentUser}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
     </firebase-auth>
-    
-    
+
+    <iron-ajax id="postUser" method="POST" url="/users" handle-as="json" body="" content-type="application/json" last-response="{{postResponse}}"></iron-ajax>
+
+    <iron-ajax id="getUser" url="/users/[[currentUser.uid]]" method="get" handle-as="json" last-response="{{user}}" on-response="init"></iron-ajax>
+
 
     <div class="header-bar">
       <div class="row header-row">
@@ -38,24 +42,24 @@
         </div>
         <div class="col-xs-6 no-padding">
           <template is="dom-if" if="[[user]]">
-            <img src="{{user.photoURL}}?sz=64" class="pull-right main-button user-avatar hoverable" icon="android" on-tap="logout">
+            <img src="{{currentUser.photoURL}}?sz=64" class="pull-right main-button user-avatar hoverable" icon="android" on-tap="logout">
           </template>
           <template is="dom-if" if="[[!user]]">
             <paper-icon-button class="pull-right main-button" icon="pets" on-tap="login"></paper-icon-button>
-          </template>          
+          </template>
           <iron-icon class="pull-right user-setting hoverable" icon="more-vert"></iron-icon>
-          <iron-icon class="pull-right ui-menu hoverable" icon="menu" on-tap="toggleMenu"></iron-icon>
+          <template is="dom-if" if="{{user}}">
+            <iron-icon class="pull-right ui-menu hoverable" icon="menu" on-tap="toggleMenu"></iron-icon>
+          </template>
           <div>
           </div>
-
         </div>
       </div>
-
     </div>
+
 
     <paper-dialog id="menuDialog" class="dialog-container scrollable" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
       with-backdrop>
-
       <div class="container-fluid">
         <paper-dialog-scrollable>
           <div class="row">
@@ -120,25 +124,28 @@
       </div>
     </paper-dialog>
 
-    <paper-dialog id="loginDialog" class="dialog-container scrollable" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
-      with-backdrop>
-      <my-login class="clear-margin" on-init-main="init"></my-login>
-    </paper-dialog>
+    <template is="dom-if" if="{{user}}">
+
+
+      <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        <template is="dom-if" if="{{user.isAuth}}">
+          <my-billboard name="billboard"></my-billboard>
+        </template>
+        <my-view3 name="view3"></my-view3>
+        <my-view404 name="view404"></my-view404>
+      </iron-pages>
+
+    </template>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation"></iron-selector>
-    <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-      <my-billboard name="billboard"></my-billboard>
-      <my-view3 name="view3"></my-view3>
-      <my-view404 name="view404"></my-view404>
-    </iron-pages>
+
+
   </template>
 
-  <iron-ajax id="getUser" url="/user" method="GET" handle-as="json" body="" content-type="application/json"></iron-ajax>
 
-  <firebase-app auth-domain="billboard-2e06e.firebaseapp.com" database-url="https://billboard-2e06e.firebaseio.com/" api-key="AIzaSyD2YZGsbuief-t5fZkfAHpI4jbKf8GPjiM">
-  </firebase-app>
+
 
   <script>
     class MyApp extends Polymer.Element {
@@ -148,6 +155,11 @@
         return {
           user: {
             type: Object
+          },
+          currentUser: {
+            type: Object,
+            reflectToAttribute: true,
+            observer: 'initUser',
           },
           page: {
             type: String,
@@ -166,6 +178,19 @@
         return [
           '_routePageChanged(routeData.page)',
         ];
+      }
+
+      ready() {
+        super.ready();
+      }
+
+      initUser(e){
+        this.$.getUser.generateRequest();
+      }
+
+      init(e) {
+        console.log("yep");
+        console.log(this.user.isAuth);
       }
 
       login() {
@@ -203,10 +228,6 @@
         } else {
           this.$.menuDialog.close();
         }
-
-      }
-
-      init() {
 
       }
     }

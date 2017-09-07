@@ -23,12 +23,16 @@
                 max-width: 800px;
             }
         </style>
-        <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
+        <firebase-auth id="auth" user="{{authUser}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
         </firebase-auth>
+        <iron-ajax id="postAjax" method="POST" url="/post" handle-as="json" body="" content-type="application/json" last-response="{{postResponse}}" on-response="init"></iron-ajax>
+        <iron-ajax id="getAjax" url="/post" method="get" handle-as="json" last-response="{{posts}}" auto></iron-ajax> 
 
-        <paper-card id="mainCard" class="main-card" heading="{{mainPost}}" image="" elevation="1" animated-shadow="false">
+
+
+        <paper-card id="mainCard" class="main-card" heading="{{posts.0.title}}" image="" elevation="1" animated-shadow="false">
             <div class="card-content">
-                <h1>[[mainPost]]</h1>
+                <h1>[[posts.0.name]]</h1>
                 <div id="notes">
                     <ul id="notes-list">
                         <template is="dom-repeat" items="[[post]]" as="post">
@@ -43,11 +47,11 @@
         </paper-card>
 
 
-        <paper-dialog id="postDialog" modal>
-            <h2>Dialog Title</h2>
+        <paper-dialog id="postDialog">
+            <h2>Post creator</h2>
             <paper-dialog-scrollable>
-                <paper-input id="postTitle" label="Post Title..." required></paper-input>
-                <paper-input id="postContent" label="Message..." required></paper-input>
+                <paper-input id="postName" label="Post Name..." required></paper-input>
+                <paper-input id="postTitle" label="Title..." required></paper-input>
                 <div id="note-controls">
                     <paper-button id="add" raised on-tap="add">Add</paper-button>
                 </div>
@@ -66,25 +70,54 @@
                     user: {
                         type: Object
                     },
-                    notes: {
+                    data: {
                         type: Object
                     },
-                    
+                    postResponse: {
+                        type: Object,
+                        notify: true
+                    },
+                    currentUser: {
+                        type: Object
+                    },             
+                    test: {
+                        type: String,
+                        value: "wtf man"
+
+                    }    
+
+
 
                 }
             }
 
             ready() {
                 super.ready();
-                
-            }            
+
+            }         
+            
 
             openPost() {
-                
                 this.$.postDialog.opened = true
-            }            
+            }
 
-            
+            add() {
+                this.$.postAjax.body = {
+                    "ownerId": this.authUser.uid,
+                    "name": this.$.postName.value,
+                    "title": this.$.postTitle.value
+                };
+                this.$.postAjax.generateRequest();
+
+            }
+
+            init(e) {
+                this.test = e.detail.xhr.response.postData.name;
+                console.log("inited");
+                console.log(e.detail.xhr.response.postData.name);
+            }
+
+
         }
 
 
