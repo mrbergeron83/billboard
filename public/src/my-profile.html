@@ -1,0 +1,159 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="./my-elements.html">
+
+<dom-module id="my-profile">
+  <template>
+    <style include="granite-bootstrap"></style>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        height: 100%;
+      }
+
+      .message-title {
+        z-index: -1;
+        background-color: #607D8B;
+        font-size: 12px;
+        font-weight: 500;
+        color: lightgray;
+        height: 20px;
+        line-height: 20px;
+        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);
+      }
+
+      .float-right {
+        float: right;
+      }
+
+      #errToast {
+        --paper-toast-background-color: red;
+        --paper-toast-color: white;
+      }
+
+      #submit-button {
+        text-align: center;
+        margin: 0 auto;
+        display: block;
+      }
+
+      #profile-container {
+        height: 100%;
+        width: 100%;
+        padding-top: 200px;
+        
+        
+        
+      }
+
+      #profilePage {
+        height: 100%;
+      }
+
+    </style>
+    <div id="profilePage" class="container-fluid clear-borders">
+      <div class="header-bar container-fluid">
+        <div class="row">
+          <div class="header-title col-xs-12">
+            User profile
+          </div>
+        </div>
+        <div class="row">
+          <div class="message-title col-xs-12">
+            Please fill in the form to continue...
+          </div>
+        </div>
+      </div>
+
+
+      <div id="profile-container" class="container">
+        <div class="row">
+          <div class="col-lg-3"></div>
+          <div class="col-lg-6">
+            <paper-input id="firstName" label="First Name"></paper-input>
+          </div>
+          <div class="col-lg-3"></div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3"></div>
+          <div class="col-lg-6">
+            <paper-input id="lastName" label="Last Name"></paper-input>
+          </div>
+          <div class="col-lg-3"></div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3"></div>
+          <div class="col-lg-6">
+            <paper-input id="email" label="Email"></paper-input>
+          </div>
+          <div class="col-lg-3"></div>
+        </div>
+        <div  id="submit-button" class="container">
+          <paper-button  raised on-tap="submit">Submit</paper-button>
+        </div>
+      </div>
+    </div>
+
+
+    <paper-toast id="errToast" duration="0" class="fit-bottom">
+
+      <paper-button class="float-right" raised on-tap="close">Close</paper-button>
+
+    </paper-toast>
+    </div>
+
+    <firebase-auth id="auth" user="{{currentUser}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
+    </firebase-auth>
+    <iron-ajax id="postUser" method="POST" url="/users" handle-as="json" body="" content-type="application/json" last-response="{{postResponse}}"
+      on-response="handleResponse"></iron-ajax>
+
+
+
+  </template>
+  <script>
+    class MyProfile extends Polymer.Element {
+      static get is() {
+        return 'my-profile';
+
+      }
+
+      static get properties() {
+        return {
+          currentUser: {
+            type: Object
+          }
+        }
+
+      }
+      submit() {
+        this.$.postUser.body = {
+          _id: this.currentUser.uid,
+          firstName: this.$.firstName.value,
+          lastName: this.$.lastName.value,
+          email: this.$.email.value,
+          isAuth: true
+        };
+        this.$.postUser.generateRequest();
+        
+      }
+
+      handleResponse(e) {
+        if (e.detail.xhr.response.errmsg) {
+          this.$.errToast.fitInto = this.$.profilePage;
+          this.$.errToast.text = e.detail.xhr.response.errmsg;
+          this.$.errToast.open();
+
+        }
+        this.dispatchEvent(new CustomEvent('init-auth', {detail: {kicked: true}}));
+
+      }
+
+      close() {
+        this.$.errToast.close();
+      }
+
+
+    }
+    window.customElements.define(MyProfile.is, MyProfile);
+  </script>
+</dom-module>

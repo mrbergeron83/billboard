@@ -19,8 +19,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         height: 50px;
         width: 100%;
         box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);
-        padding-left: 1%;
-        padding-right: 1%
       }
 
       .header-row {
@@ -48,6 +46,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-weight: 500;
         color: #fff;
         height: 50px;
+        margin-left: 15px;
+        margin-right: -15px;
         line-height: 50px;
       }
 
@@ -84,53 +84,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: none;
       }
 
-      .dialog-header {
-        background-color: var(--app-primary-color);
-        height: 40px;
-        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);
-        margin-top: 0;
-        width: 100%;
-      }
-
-      .clear-margin {
-        padding: 0 0;
-        margin: 0 0;
-      }
-
-      .dialog-title {
-        font-size: 20px;
-        font-weight: 500;
-        color: #fff;
-        height: 20px;
-        line-height: 40px;
-      }
-
-      #termCheckbox {
-        --paper-checkbox-size: 15px;
-        margin: 25px 25px;
-      }
-
-      #submitButton {
-        background-color: var(--app-primary-color);
-        font-weight: 500;
-        color: #fff;
-        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);
-        margin: 25px 25px;
-        cursor: pointer;
-      }
-
-      #submitButton[disabled],
-      #submitButton[toggles][active] {
-        background: gray;
-        color: lightgray;
-      }
-
       .hoverable {
         cursor: pointer;
       }
 
+      .dialog-borders {
+        padding: 0 0 0 0;
+        margin: 0 0;
+        border-radius: 5px;
+      }
+
       .no-padding {
-        padding: 0;
+        padding: 0 0 0 0;
+        margin: 0 0;
       }
 
       .floating-button {

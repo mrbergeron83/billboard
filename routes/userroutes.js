@@ -19,19 +19,18 @@ router.get('/:id', function (req, res) {
 
     });
 });
-// Create USer
+// Create User
 router.post("/", function (req, res) {
     var newUser = new User({
-        _id: req.body.uid,
+        _id: req.body._id,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        department: req.body.department,
-        position: req.body.position
+        isAuth: req.body.isAuth
     });
     User.create(newUser, function (err, user) {
         if (err) {
-            res.send({ "errMessage": "Couldn't create new user", "errLog": err });
+            res.send(err);
         } else {
             res.send({ "newUser": newUser });
         }

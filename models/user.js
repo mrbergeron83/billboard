@@ -1,13 +1,12 @@
 var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
-    _id: String,
-    isAuth: {type: Boolean, default: false},
+    _id: String,    
     firstName: String,
     lastName: String,
     email: String,
-    department: String,
-    position: String,
+    createdAt: {type: Date, default: Date.now},
+    isAuth: {type: Boolean, default: false},    
     isAdmin: {type: Boolean, default: false}
 });
 

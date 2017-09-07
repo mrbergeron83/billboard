@@ -1,13 +1,12 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="./my-elements.html">
 <link rel="import" href="./shared-styles.html">
+<link rel="import" href="my-profile.html">
 <link rel="import" href="my-login.html">
 
 
 
 <link rel="lazy-import" href="my-billboard.html">
-<link rel="lazy-import" href="my-view1.html">
-<link rel="lazy-import" href="my-view2.html">
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
 
@@ -19,20 +18,18 @@
        :host {
         --app-primary-color: #FF9800;
         --app-secondary-color: black;
-
         display: block;
       }
+
+      paper-dialog {
+        border-radius: 5px;
+      }
+      
     </style>
 
-    <firebase-app auth-domain="billboard-2e06e.firebaseapp.com" database-url="https://billboard-2e06e.firebaseio.com/" api-key="AIzaSyD2YZGsbuief-t5fZkfAHpI4jbKf8GPjiM">
-    </firebase-app>
 
-    <firebase-auth id="auth" user="{{currentUser}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
-    </firebase-auth>
 
-    <iron-ajax id="postUser" method="POST" url="/users" handle-as="json" body="" content-type="application/json" last-response="{{postResponse}}"></iron-ajax>
 
-    <iron-ajax id="getUser" url="/users/[[currentUser.uid]]" method="get" handle-as="json" last-response="{{user}}" on-response="init"></iron-ajax>
 
 
     <div class="header-bar">
@@ -41,14 +38,14 @@
           Billboard
         </div>
         <div class="col-xs-6 no-padding">
-          <template is="dom-if" if="[[user]]">
+          <template is="dom-if" if="[[currentUser]]">
             <img src="{{currentUser.photoURL}}?sz=64" class="pull-right main-button user-avatar hoverable" icon="android" on-tap="logout">
           </template>
-          <template is="dom-if" if="[[!user]]">
+          <template is="dom-if" if="[[!currentUser]]">
             <paper-icon-button class="pull-right main-button" icon="pets" on-tap="login"></paper-icon-button>
           </template>
           <iron-icon class="pull-right user-setting hoverable" icon="more-vert"></iron-icon>
-          <template is="dom-if" if="{{user}}">
+          <template is="dom-if" if="{{currentUser}}">
             <iron-icon class="pull-right ui-menu hoverable" icon="menu" on-tap="toggleMenu"></iron-icon>
           </template>
           <div>
@@ -56,6 +53,7 @@
         </div>
       </div>
     </div>
+
 
 
     <paper-dialog id="menuDialog" class="dialog-container scrollable" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
@@ -124,22 +122,34 @@
       </div>
     </paper-dialog>
 
-    <template is="dom-if" if="{{user}}">
+    <paper-dialog id="profileDialog" class="dialog-container" modal>
+      <my-profile class="clear-borders" on-init-auth="oAuth"></my-profile>
+    </paper-dialog>
+    <paper-dialog id="loginDialog" class="dialog-container" modal>
+      <my-login class="clear-borders"></my-login>
+    </paper-dialog>
 
 
+
+
+    <template is="dom-if" if="{{user.isAuth}}">
       <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-        <template is="dom-if" if="{{user.isAuth}}">
-          <my-billboard name="billboard"></my-billboard>
-        </template>
-        <my-view3 name="view3"></my-view3>
+        <my-billboard name="billboard"></my-billboard>
         <my-view404 name="view404"></my-view404>
       </iron-pages>
-
     </template>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation"></iron-selector>
+
+    <firebase-app auth-domain="billboard-2e06e.firebaseapp.com" database-url="https://billboard-2e06e.firebaseio.com/" api-key="AIzaSyD2YZGsbuief-t5fZkfAHpI4jbKf8GPjiM">
+    </firebase-app>
+    <firebase-auth id="auth" user="{{currentUser}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
+    </firebase-auth>
+    <iron-ajax id="postUser" method="POST" url="/users" handle-as="json" body="" content-type="application/json" last-response="{{postResponse}}"></iron-ajax>
+    <iron-ajax id="getUser" url="/users/[[currentUser.uid]]" method="get" handle-as="json" last-response="{{user}}" on-response="appAuth"></iron-ajax>
+
 
 
   </template>
@@ -154,12 +164,14 @@
       static get properties() {
         return {
           user: {
-            type: Object
+            type: Object,
+          },
+          statusKnown: {
+            type: Boolean,
+            observer: 'oAuth'
           },
           currentUser: {
             type: Object,
-            reflectToAttribute: true,
-            observer: 'initUser',
           },
           page: {
             type: String,
@@ -184,13 +196,37 @@
         super.ready();
       }
 
-      initUser(e){
+      proAuth() {
+        console.log("reinit from profile")
         this.$.getUser.generateRequest();
       }
 
-      init(e) {
-        console.log("yep");
-        console.log(this.user.isAuth);
+      oAuth() {
+        console.log("oAuth: " + this.statusKnown)
+        if (this.statusKnown === true && this.currentUser === null) {
+          this.$.loginDialog.opened = true;          
+        } else if(this.statusKnown === true && this.currentUser !== null){
+          if(this.$.profileDialog.opened === true) {
+            this.$.profileDialog.opened = false;
+          }
+          this.$.getUser.generateRequest();
+        }        
+      }
+
+
+      appAuth() {
+        console.log("appAuth: " + this.user)
+        if(this.user === null){
+          this.$.profileDialog.opened = true;
+        }
+        
+      }
+
+
+
+
+      closeDialog() {
+        this.$.profileDialog.opened = false;
       }
 
       login() {

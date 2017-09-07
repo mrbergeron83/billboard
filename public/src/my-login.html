@@ -9,32 +9,58 @@
              :host {
                 display: block;
                 padding: 10px;
+                height: 100%;
+                background-color: #EEEEEE;
+            }
+
+            #submit-button {
+                text-align: center;
+                margin: 0 auto;
+                display: block;
+            }
+
+            .center {
+                text-align: center;
+                margin: 0 auto;
+                display: block;
+                width: 5%;
+            }
+
+            .login-container {
+                display: flex;
+                height: 89%;
+                align-items: center;
+                text-align: center;
+            }
+
+            .login-row {
+                margin-left: auto;
+                margin-right: auto;
+                width: 99%;
             }
         </style>
-        <div class="header-bar container-fluid">
-            <div class="row">
-                <div class="header-title col-xs-12">
-                    Login
+
+
+        <div id="profilePage" class="container-fluid clear-borders">
+            <div class="header-bar container-fluid">
+                <div class="row">
+                    <div class="header-title col-xs-12">
+                        Login
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="login-container">
+            <div class="login-row">
+                <h1>Please login using your Google account</h1>
+                <paper-button class="center" raised on-tap="login">Login</paper-button>
             </div>
         </div>
 
         <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
         </firebase-auth>
-
-
-        <paper-button raised on-tap="login" hidden$="[[user]]">Login</paper-button>
-        <paper-button raised on-tap="logout" hidden$="[[!user]]">Logout</paper-button>
-
-
-
-
-
-
-
-
-
-
+        
     </template>
     <script>
         class MyLogin extends Polymer.Element {
@@ -60,10 +86,6 @@
 
             login() {
                 return this.$.auth.signInWithRedirect();
-            }
-
-            logout() {
-                return this.$.auth.signOut();
             }
 
 

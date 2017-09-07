@@ -25,7 +25,11 @@
     "polymerfire": "firebase/polymerfire#^2.1.0",
     "firebase": "^4.3.0",
     "paper-card": "polymerelements/paper-card#^2.0.0",
-    "paper-fab": "polymerelements/paper-fab#^2.0.0"
+    "paper-fab": "polymerelements/paper-fab#^2.0.0",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.0",
+    "paper-item": "polymerelements/paper-item#^2.0.0",
+    "paper-listbox": "polymerelements/paper-listbox#^2.0.0",
+    "paper-toast": "polymerelements/paper-toast#^2.0.0"
   },
   "resolutions": {
     "polymer": "^2.0.0"
