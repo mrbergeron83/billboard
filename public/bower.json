@@ -29,7 +29,8 @@
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.0",
     "paper-item": "polymerelements/paper-item#^2.0.0",
     "paper-listbox": "polymerelements/paper-listbox#^2.0.0",
-    "paper-toast": "polymerelements/paper-toast#^2.0.0"
+    "paper-toast": "polymerelements/paper-toast#^2.0.0",
+    "paper-dropdown-input": "Juravenator/paper-dropdown-input#^2.5.1"
   },
   "resolutions": {
     "polymer": "^2.0.0"

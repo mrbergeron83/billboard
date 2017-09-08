@@ -1,0 +1,29 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="./my-elements.html">
+
+<dom-module id="my-projectsettings">
+    <template>
+        <style include="shared-styles">
+             :host {
+                display: block;
+
+                padding: 10px;
+            }
+        </style>
+
+        <div class="card">
+            <div class="circle">1</div>
+            <h1>project settings</h1>
+
+        </div>
+    </template>
+
+    <script>
+        class MyProjectSettings extends Polymer.Element {
+            static get is() { return 'my-projectsettings'; }
+        }
+
+        window.customElements.define(MyProjectSettings.is, MyProjectSettings);
+    </script>
+</dom-module>

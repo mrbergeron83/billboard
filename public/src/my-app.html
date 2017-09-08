@@ -7,7 +7,7 @@
 
 
 <link rel="lazy-import" href="my-billboard.html">
-<link rel="lazy-import" href="my-view3.html">
+<link rel="lazy-import" href="my-appsettings.html">
 <link rel="lazy-import" href="my-view404.html">
 
 <dom-module id="my-app">
@@ -20,17 +20,7 @@
         --app-secondary-color: black;
         display: block;
       }
-
-      paper-dialog {
-        border-radius: 5px;
-      }
-      
     </style>
-
-
-
-
-
 
     <div class="header-bar">
       <div class="row header-row">
@@ -39,13 +29,8 @@
         </div>
         <div class="col-xs-6 no-padding">
           <template is="dom-if" if="[[currentUser]]">
-            <img src="{{currentUser.photoURL}}?sz=64" class="pull-right main-button user-avatar hoverable" icon="android" on-tap="logout">
-          </template>
-          <template is="dom-if" if="[[!currentUser]]">
-            <paper-icon-button class="pull-right main-button" icon="pets" on-tap="login"></paper-icon-button>
-          </template>
-          <iron-icon class="pull-right user-setting hoverable" icon="more-vert"></iron-icon>
-          <template is="dom-if" if="{{currentUser}}">
+            <img src="{{currentUser.photoURL}}?sz=64" class="pull-right main-button user-avatar hoverable" icon="android" on-tap="logout">            
+            <iron-icon icon="settings-applications" class="pull-right ui-menu hoverable" on-tap="appSettings"></iron-icon>            
             <iron-icon class="pull-right ui-menu hoverable" icon="menu" on-tap="toggleMenu"></iron-icon>
           </template>
           <div>
@@ -54,66 +39,14 @@
       </div>
     </div>
 
-
-
     <paper-dialog id="menuDialog" class="dialog-container scrollable" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
       with-backdrop>
       <div class="container-fluid">
         <paper-dialog-scrollable>
           <div class="row">
             <div class="col-xs-4 menu-item text-center">
-              <a name="billboard" href="[[rootPath]]billboard" on-tap="toggleMenu">
-                <paper-button class="menu-button" raised>
-                  Office 1
-                </paper-button>
-              </a>
-            </div>
-            <div class="col-xs-4 menu-item text-center">
-              <a name="view2" href="[[rootPath]]view2" on-tap="toggleMenu">
-                <paper-button class="menu-button" raised>
-                  Office 2
-                </paper-button>
-              </a>
-            </div>
-            <div class="col-xs-4 menu-item text-center">
-              <a name="view3" href="[[rootPath]]view3" on-tap="toggleMenu">
-                <paper-button class="menu-button" raised>
-                  Cafeteria
-                </paper-button>
-              </a>
-            </div>
-            <div class="col-xs-4 menu-item text-center">
-              <a name="view3" href="[[rootPath]]view3" on-tap="toggleMenu">
-                <paper-button class="menu-button" raised>
-                  Cafeteria
-                </paper-button>
-              </a>
-            </div>
-            <div class="col-xs-4 menu-item text-center">
-              <a name="view3" href="[[rootPath]]view3" on-tap="toggleMenu">
-                <paper-button class="menu-button" raised>
-                  Cafeteria
-                </paper-button>
-              </a>
-            </div>
-            <div class="col-xs-4 menu-item text-center">
-              <a name="view3" href="[[rootPath]]view3" on-tap="toggleMenu">
-                <paper-button class="menu-button" raised>
-                  Cafeteria
-                </paper-button>
-              </a>
-            </div>
-            <div class="col-xs-4 menu-item text-center">
-              <a name="view3" href="[[rootPath]]view3" on-tap="toggleMenu">
-                <paper-button class="menu-button" raised>
-                  Cafeteria
-                </paper-button>
-              </a>
-            </div>
-            <div class="col-xs-4 menu-item text-center">
-              <a name="view3" href="[[rootPath]]view3" on-tap="toggleMenu">
-                <paper-button class="menu-button" raised>
-                  Cafeteria
+                <paper-button id="billboard" class="menu-button" raised on-tap="goTo">
+                  button 1
                 </paper-button>
               </a>
             </div>
@@ -123,10 +56,10 @@
     </paper-dialog>
 
     <paper-dialog id="profileDialog" class="dialog-container" modal>
-      <my-profile class="clear-borders" on-init-auth="oAuth"></my-profile>
+      <my-profile class="no-padding" on-init-auth="oAuth"></my-profile>
     </paper-dialog>
     <paper-dialog id="loginDialog" class="dialog-container" modal>
-      <my-login class="clear-borders"></my-login>
+      <my-login class="no-padding"></my-login>
     </paper-dialog>
 
 
@@ -138,6 +71,11 @@
         <my-view404 name="view404"></my-view404>
       </iron-pages>
     </template>
+    
+    <template is="dom-if" if="{{user.isAdmin}}">
+      <my-appsettings name="appsettings"></my-appsettings>
+    </template>
+    
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
@@ -165,6 +103,8 @@
         return {
           user: {
             type: Object,
+            reflectToAttribute: true,
+
           },
           statusKnown: {
             type: Boolean,
@@ -192,6 +132,15 @@
         ];
       }
 
+      goTo(e) {
+        this.page = e.target.id;
+        this.$.menuDialog.opened = false;
+      }
+
+      appSettings() {
+        this.page = 'appsettings'
+      }
+
       ready() {
         super.ready();
       }
@@ -204,43 +153,37 @@
       oAuth() {
         console.log("oAuth: " + this.statusKnown)
         if (this.statusKnown === true && this.currentUser === null) {
-          this.$.loginDialog.opened = true;          
-        } else if(this.statusKnown === true && this.currentUser !== null){
-          if(this.$.profileDialog.opened === true) {
+          this.$.loginDialog.opened = true;
+        } else if (this.statusKnown === true && this.currentUser !== null) {
+          if (this.$.profileDialog.opened === true) {
             this.$.profileDialog.opened = false;
           }
           this.$.getUser.generateRequest();
-        }        
+        }
       }
-
 
       appAuth() {
         console.log("appAuth: " + this.user)
-        if(this.user === null){
+        if (this.user === null) {
           this.$.profileDialog.opened = true;
         }
-        
+
       }
-
-
-
 
       closeDialog() {
         this.$.profileDialog.opened = false;
       }
 
-      login() {
-        return this.$.auth.signInWithRedirect();
-      }
-
       logout() {
-        return this.$.auth.signOut();
+        this.$.auth.signOut();
+        this.user = null;
+        this.$.loginDialog.opened = true;
       }
 
       _routePageChanged(page) {
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
-        this.page = page || 'billboard';
+        this.page = page || 'appsettings';
 
       }
 

@@ -1,0 +1,103 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="./my-elements.html">
+
+<dom-module id="my-teamsettings">
+    <template>
+        <style include="shared-styles">
+             :host {
+                display: block;
+
+                padding: 10px;
+            }
+
+            .main-card {
+                display: block;
+            }
+
+            .card-content {
+                display: block;
+                height: 100%;
+            }
+
+            .container {
+                display: inline-flex;
+            }
+        </style>
+
+        <iron-ajax id="getTeams" url="/teams" method="get" handle-as="json" last-response="{{teams}}" auto></iron-ajax>
+        <iron-ajax id="createTeam" url="/teams" method="POST" handle-as="json" last-response="{{addTeamResponse}}" content-type="application/json"
+            on-response=""></iron-ajax>
+        <iron-ajax id="updateTeam" url="/teams/[[team._id]]" method="PUT" handle-as="json" last-response="{{teams}}" content-type="application/json"
+            on-response=""></iron-ajax>
+
+
+        <paper-button raised on-tap="test">POST</paper-button>
+
+
+        <paper-card id="mainCard" class="main-card" heading="Team Settings" image="" elevation="1" animated-shadow="false">
+            <div class="card-content">
+                <div class="container">
+                    <paper-dropdown-menu label="Teams">
+                        <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{selected}}">
+
+                            
+                            <paper-item>yup</paper-item>
+                            
+
+                        </paper-listbox>
+                    </paper-dropdown-menu>
+                </div>
+
+
+
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        class MyTeamSettings extends Polymer.Element {
+            static get is() { return 'my-teamsettings'; }
+
+            static get properties() {
+                return {
+
+                }
+            }
+
+            addMember() {
+                var teamMember = {
+                    _id: '23095713897130951309483',
+                    firstName: 'jesus',
+                    lastName: 'H. Christ',
+                    email: "sky@paradise.edu"
+                }
+                this.$.updateTeam.body = teamMember;
+                this.$.updateTeam.generateRequest();
+            }
+
+            addTeam() {
+                this.$.createTeam.body = {
+                    teamName: "le gros",
+                    description: "test desc",
+                    train: "choo choo",
+                    type: "whatever",
+                    project: "end all life",
+                    mission: "replace human race by robot arms",
+                    milestone: "make a sentient robot arm",
+                    nextSprint: "make an arm",
+                    scrumMaster: "Jesus H. Christ",
+                    productOwner: "The great one, God",
+                };
+                this.$.createTeam.generateRequest();
+            }
+
+            teste(e) {
+                console.log(e.detail.xhr)
+            }
+
+        }
+
+        window.customElements.define(MyTeamSettings.is, MyTeamSettings);
+    </script>
+</dom-module>

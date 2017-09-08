@@ -1,0 +1,95 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="./my-elements.html">
+<link rel="import" href="./my-teamsettings.html">
+<link rel="import" href="./my-projectsettings.html">
+
+<dom-module id="my-appsettings">
+    <template>
+        <style include="granite-bootstrap"></style>
+        <style include="shared-styles">
+             :host {
+                display: flex;
+                padding: 10px;
+                height: 95vh;
+                --paper-card-header-color: #eeeeee;
+                --paper-card-header: {
+                    background-color: #3F51B5;
+                }
+            }
+
+            .main-card {
+                display: block;
+                height: 100%;
+                width: 100%;
+            }
+
+            #card-header {
+                display: block;
+                height: 50px;
+                background-color: #607D8B;
+                box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.7);
+                line-height: 50px;
+            }
+
+            #card-header-title {
+                padding-left: 20px;
+                color: #fff;
+                font-size: 20px;
+                font-weight: 500;
+            }
+
+            iron-icon {
+                margin-top: 10px;
+                margin-right: 20px;
+                float: right;
+                color: white;
+                height: 32px;
+                width: 32px;
+            }
+
+        </style>
+
+
+        <paper-card id="mainCard" class="main-card" heading="" image="" elevation="1" animated-shadow="false">
+            <div id="card-header">
+                <div id="card-header-title">
+                    App Settings
+                    <iron-icon icon="create-new-folder"></iron-icon>
+                    <iron-icon icon="social:group-add"></iron-icon>
+                </div>
+
+
+
+
+
+
+
+            </div>
+            <div class="card-content">
+                <my-teamsettings hidden$="{{!selected}}"></my-teamsettings>
+                <my-projectsettings hidden$="{{selected}}"></my-projectsettings>
+            </div>
+        </paper-card>
+
+    </template>
+
+    <script>
+        class MyAppSetting extends Polymer.Element {
+            static get is() { return 'my-appsettings'; }
+
+            static get properties() {
+                return {
+                    selected: {
+                        type: Boolean,
+                        value: true,
+                        reflectToAttribute: true
+                    }
+                }
+            }
+
+
+        }
+        window.customElements.define(MyAppSetting.is, MyAppSetting);
+    </script>
+</dom-module>
