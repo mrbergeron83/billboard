@@ -8,8 +8,30 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
-router.post("/", function (req, res) {
+//GET ALL TEAMS
+router.get('/', function (req, res) {
+    Team.find('teams', function (err, teams) {
+        if (err) {
+            return res.send(err);
+        } else {
+            res.status(200).send(teams);
+        }
+    });
+});
 
+//GET SINGLE TEAM
+router.get('/:id', function (req, res) {
+    Team.findById(req.params.id, function (err, foundTeam) {
+        if (err) {
+            return res.send(err);
+        } else {
+            res.status(200).send(foundTeam);
+        }
+    });
+});
+
+// CREATE NEW TEAM
+router.post("/", function (req, res) {
     var newTeam = new Team({
         teamName: req.body.teamName,
         description: req.body.description,
@@ -26,27 +48,64 @@ router.post("/", function (req, res) {
         if (err) {
             res.send(err);
         } else {
-            res.send({ "teamData": newTeam });
+            res.status(200).send("New team created...");
         }
     });
 });
 
-router.put("/:id", function (req, res) {
-    //find/update
-    Team.findByIdAndUpdate(req.params.id, {$push: {teamMembers: req.body}},{safe: true, upsert: true}, function (err, updatedTeam) {
+// UPDATE TEAM
+router.put("/info/:id", function (req, res) {
+    Team.findByIdAndUpdate(req.params.id, req.body, function (err, updatedTeam) {
         if (err) {
-            res.status(500).send("ERRORRRRRRR");
+            res.send(err);
         } else {
-            
-            res.status(200).send(req.params);
+            res.status(200).send("Team date succesfully saved...");
         }
     });
 });
 
-router.get('/', function (req, res) {
-    Team.find('teams', function (err, teams) {
-        if (err) return res.status(500).send("There was a problem finding the teams.");
-        res.status(200).send(teams);
+// UPDATE TEAM MEMBER
+router.put("/:id", function (req, res) {
+    Team.findByIdAndUpdate(req.params.id, { $addToSet: { teamMembers: req.body } }, { unique: true }, function (err, updatedTeam) {
+        if (err) {
+            res.send(err);
+        } else {
+            res.status(200).send("Member succesfully added...");
+        }
+    });
+});
+
+// REMOVE TEAM MEMBER
+router.put("/", function (req, res) {
+    Team.updateMany({}, { $pull: { teamMembers: req.body } }, function (err, item) {
+        if (err) {
+            res.send(err)
+        } else {
+            res.status(200).send("User sucessfully removed...");
+        }
+    })
+});
+
+// UPDATE TEAM MEMBER
+router.put("/delete/:id", function (req, res) {
+    Team.findByIdAndUpdate(req.params.id, { $pull: { teamMembers: req.body } }, { unique: true }, function (err, updatedTeam) {
+        if (err) {
+            res.send(err);
+        } else {
+            res.status(200).send("User sucessfully removed...");
+        }
+    });
+});
+
+// DESTROY A TEAM
+router.delete("/", function (req, res) {
+    Team.deleteOne({ "_id": req.body._id }, function (err) {
+        if (err) {
+            res.status(500).send(err)
+        } else {
+            res.status(200).send("Team detroyed")
+        }
+
     });
 });
 

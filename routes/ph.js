@@ -36,3 +36,19 @@ var newTeam = new Team({
             email: String
         }],
         date: { type: Date, default: Date.now },
+
+
+        updateTeam() {
+            var inputs = Polymer.dom(this.root).querySelectorAll('.tId');
+            var arr = []
+            var obj = {};
+            for (var i = 0; i < inputs.length; i++) {
+                arr.push([inputs[i].id, inputs[i].value]);
+            }
+            arr.forEach(function (data) {
+                obj[data[0]] = data[1]
+            });
+            this.$.updateTeamInfo.body = obj;
+            this.$.updateTeamInfo.generateRequest();
+            // open toast
+        }

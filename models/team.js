@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var teamSchema = new mongoose.Schema({
-    teamName: String,
+    teamName: {type: String, unique: true},
     description: String,
     train: String,
     type: String,

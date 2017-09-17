@@ -4,57 +4,200 @@
 
 <dom-module id="my-teamsettings">
     <template>
+        <style include="granite-bootstrap"></style>
         <style include="shared-styles">
              :host {
                 display: block;
-
                 padding: 10px;
             }
 
-            .main-card {
-                display: block;
-            }
-
-            .card-content {
-                display: block;
-                height: 100%;
-            }
-
-            .container {
-                display: inline-flex;
-            }
+            
         </style>
 
-        <iron-ajax id="getTeams" url="/teams" method="get" handle-as="json" last-response="{{teams}}" auto></iron-ajax>
-        <iron-ajax id="createTeam" url="/teams" method="POST" handle-as="json" last-response="{{addTeamResponse}}" content-type="application/json"
-            on-response=""></iron-ajax>
-        <iron-ajax id="updateTeam" url="/teams/[[team._id]]" method="PUT" handle-as="json" last-response="{{teams}}" content-type="application/json"
-            on-response=""></iron-ajax>
-
-
-        <paper-button raised on-tap="test">POST</paper-button>
-
-
-        <paper-card id="mainCard" class="main-card" heading="Team Settings" image="" elevation="1" animated-shadow="false">
-            <div class="card-content">
-                <div class="container">
-                    <paper-dropdown-menu label="Teams">
-                        <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{selected}}">
-
-                            
-                            <paper-item>yup</paper-item>
-                            
-
-                        </paper-listbox>
-                    </paper-dropdown-menu>
-                </div>
-
-
-
+        <div class="page-card">
+            <div class="container">
+                <paper-dropdown-menu id="dropDown" label="Select your team">
+                    <paper-listbox id="listbox" slot="dropdown-content" class="dropdown-content">
+                        <template is="dom-repeat" items="{{teams}}">
+                            <paper-item id="{{item._id}}" class="hoverable" on-tap="selectTeam">{{item.teamName}}</paper-item>
+                        </template>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+                <iron-icon class="hoverable iron-icon blue" icon="add-box" on-tap="newTeamDialog"></iron-icon>
+                <iron-icon class="hoverable iron-icon red" icon="indeterminate-check-box" on-tap="deleteDialog"></iron-icon>
+                <paper-button class="user-mgmt" raised on-tap="openMgmt">user mgmt</paper-button>
             </div>
-        </paper-card>
-    </template>
 
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <paper-textarea id="description" always-float-label class="tId" label="Description" value="{{selectedTeam.description}}"></paper-textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <paper-textarea id="nextSprint" always-float-label class="tId" label="Next Sprint" value="{{selectedTeam.nextSprint}}"></paper-textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <paper-input id="train" class="tId" label="Train" value="{{selectedTeam.train}}"></paper-input>
+                    </div>
+                    <div class="col-xs-6">
+                        <paper-input id="type" class="tId" label="Type" value="{{selectedTeam.type}}"></paper-input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <paper-input id="project" class="tId" label="Project" value="{{selectedTeam.project}}"></paper-input>
+                    </div>
+                    <div class="col-xs-6">
+                        <paper-input id="mission" class="tId" label="Mission" my-Object="mission value=" value="{{selectedTeam.mission}}"></paper-input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <paper-input id="milestone" class="tId" label="Milestone" value="{{selectedTeam.milestone}}"></paper-input>
+                    </div>
+                    <div class="col-xs-6">
+                        <paper-input id="scrumMaster" class="tId" label="Scrum Master" value="{{selectedTeam.scrumMaster}}"></paper-input>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <paper-input id="productOwner" class="tId" label="Product Owner" value="{{selectedTeam.productOwner}}"></paper-input>
+                    </div>
+                    <div class="col-xs-6">
+                        <paper-button id="updateButton" class="submit-button" on-tap="updateTeam">save changes</paper-button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 top-padding">
+                        <div id="avUsers">
+                            <div class="listbox-header">List of users
+                                <div class="search-container">
+                                    <paper-input id="usersSearch" no-label-float value="{{userString}}" label="Search..."></paper-input>
+                                </div>
+                            </div>
+                            <div class="list-container">
+                                <template is="dom-repeat" items="{{users}}" filter="{{searchUsers(userString)}}">
+                                    <paper-icon-button class="item-button add-button" my-object="{{item}}" icon="add-circle" on-tap="addUser"></paper-icon-button>
+                                    <paper-icon-button class="item-button add-button" id="teamClearButton" my-object="{{item}}" icon="cancel" on-tap="clearTeam"></paper-icon-button>
+                                    <paper-item class="mgmt-item">
+                                        {{item.lastName}}, {{item.firstName}}
+                                        <div class="current-team">
+                                            <template is="dom-if" if="{{item.team}}">
+                                                @ {{item.team}}
+                                            </template>
+                                        </div>
+                                    </paper-item>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 top-padding">
+                        <div id="avUsers" class="scrollable">
+                            <div class="listbox-header">Team members
+                            </div>
+                            <div class="list-container"></div>
+                            <template is="dom-repeat" items="{{selectedTeam.teamMembers}}">
+                                <paper-icon-button class="item-button remove-button" my-object="{{item}}" icon="cancel" on-tap="removeUser"></paper-icon-button>
+                                <paper-item id="{{item._id}}" class="user-item">
+                                    {{item.lastName}}, {{item.firstName}}
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <paper-dialog id="mgmtDialog" opened>
+            <div class="dialog-header">
+                <div>
+                    User Management
+                </div>
+            </div>
+            <div class="user-mgmt-container">
+                <div class="mgmt-search-container">
+                    <paper-input id="userSearch" class="user-search" no-label-float value="{{usersString}}" label="Search..."></paper-input>
+                </div>
+                <template is="dom-repeat" items="{{users}}" filter="{{searchUser(usersString)}}">
+                    <div class="mgmt-item">
+                        <div class="text-overflow">
+                            <iron-icon class="hoverable red" my-object="{{item}}" icon="delete" on-tap="destUser"></iron-icon>
+                            {{item.lastName}}, {{item.firstName}}
+                        </div>
+                        <div class="users-overflow">
+                            <template is="dom-if" if="{{!item.isAdmin}}">
+                                <iron-icon class="hoverable blue" my-object="{{item}}" icon="star-border"></iron-icon>
+                            </template>
+                            <template is="dom-if" if="{{item.isAdmin}}">
+                                <iron-icon class="hoverable blue" my-object="{{item}}" icon="star"></iron-icon>
+                            </template>
+                            {{item.email}}
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </paper-dialog>
+
+        <paper-dialog id="newTeam" class="dialog-window">
+            <div class="dialog-header">Create a team</div>
+            <div class="new-team-container">
+                <paper-input id="teamName" class="newTeamForm" label="Team Name (min:6, max:8)" minlength="4" maxlength="8" auto-validate
+                    error-message="Team name required."></paper-input>
+                <paper-textarea type="textarea" id="description" class="newTeamForm" label="Description"></paper-textarea>
+                <paper-button id="teamSubmit" class="submit-button" raised on-tap="postTeam">Create</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-dialog id="deleteDialog">
+            <div class="dialog-header">Delete team</div>
+            <template is="dom-repeat" items="{{teams}}">
+                <div class="div">
+                    <iron-icon class="hoverable red" my-object="{{item}}" icon="indeterminate-check-box" on-tap="destroyTeam"></iron-icon>
+                    {{item.teamName}}
+                </div>
+            </template>
+        </paper-dialog>
+
+
+        <paper-toast id="deleteToast" text="Are you sure you want to delete this user from the database?"></paper-toast>
+
+        <paper-toast id="addUserToast" duration="5000" class="fit-bottom" text="You must remove this user from his current team to assign him to a new team.">
+        </paper-toast>
+
+        <paper-toast id="selectTeamToast" duration="5000" class="fit-bottom" text="You must select a team before assigning a user">
+        </paper-toast>
+
+
+        <iron-ajax id="getTeams" url="/teams" method="get" handle-as="json" last-response="{{teams}}" auto></iron-ajax>
+        <iron-ajax id="getUsers" url="/users" method="get" handle-as="json" last-response="{{users}}" auto></iron-ajax>
+        <iron-ajax id="selectedTeam" method="get" handle-as="json" last-response="{{selectedTeam}}"></iron-ajax>
+
+        <iron-ajax id="postTeam" url="/teams" method="POST" handle-as="json" content-type="application/json" last-response="{{postTeamResponse}}"
+            on-response="init"></iron-ajax>
+
+        <iron-ajax id="updateTeamInfo" url="/teams/info/{{selectedTeam._id}}" method="PUT" handle-as="json" content-type="application/json"
+            on-reponse="init"></iron-ajax>
+
+        <iron-ajax id="updateTeam" url="/teams/{{selectedTeam._id}}" method="PUT" handle-as="json" content-type="application/json"
+            on-reponse="init"></iron-ajax>
+
+        <iron-ajax id="deleteTeam" url="/teams" method="DELETE" handle-as="json" content-type="application/json" on-reponse="init"></iron-ajax>
+        <iron-ajax id="deleteUser" url="/users" method="DELETE" handle-as="json" content-type="application/json" on-reponse="init"></iron-ajax>
+
+        <iron-ajax id="putUser" method="PUT" handle-as="json" content-type="application/json" last-resonse="{{putUserResponse}}"
+            on-response="init"></iron-ajax>
+        <iron-ajax id="remUser" method="PUT" handle-as="json" content-type="application/json" last-response="{{remUserResponse}}"
+            on-response="init"></iron-ajax>
+
+
+
+    </template>
     <script>
         class MyTeamSettings extends Polymer.Element {
             static get is() { return 'my-teamsettings'; }
@@ -62,40 +205,174 @@
             static get properties() {
                 return {
 
+                    users: {
+                        type: Array,
+                    },
+
+                    selectedTeam: {
+                        type: Object,
+
+                    },
+                    searchString: {
+                        type: String,
+                        reflectToAttribute: true,
+                        notify: true
+                    },
+                    postTeamResponse: {
+                        type: Object,
+                    },
+                    agree: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    lock: {
+                        type: Boolean,
+                        value: true
+                    }
                 }
             }
 
-            addMember() {
-                var teamMember = {
-                    _id: '23095713897130951309483',
-                    firstName: 'jesus',
-                    lastName: 'H. Christ',
-                    email: "sky@paradise.edu"
+            init(e) {
+                if (this.$.newTeam.opened === true) {
+                    this.$.newTeam.close();
                 }
-                this.$.updateTeam.body = teamMember;
+                this.$.getUsers.generateRequest();
+                this.$.selectedTeam.generateRequest();
+                this.$.getTeams.generateRequest();
+
+            }
+
+            openMgmt() {
+                this.$.mgmtDialog.open();
+            }
+
+            destUser(e) {
+                console.log(e.target.myObject._id)
+                this.$.deleteUser.body = {
+                    "_id": e.target.myObject._id
+                };
+                this.$.deleteUser.generateRequest();
+                this.init();
+            }
+
+            clearTeam(e) {
+                this.$.putUser.url = "/users/" + e.target.myObject._id;
+                this.$.putUser.body = { "team": null };
+                this.$.putUser.generateRequest();
+                this.$.updateTeam.url = "/teams/"
+                this.$.updateTeam.body = {
+                    "_id": e.target.myObject._id
+                };
                 this.$.updateTeam.generateRequest();
             }
 
-            addTeam() {
-                this.$.createTeam.body = {
-                    teamName: "le gros",
-                    description: "test desc",
-                    train: "choo choo",
-                    type: "whatever",
-                    project: "end all life",
-                    mission: "replace human race by robot arms",
-                    milestone: "make a sentient robot arm",
-                    nextSprint: "make an arm",
-                    scrumMaster: "Jesus H. Christ",
-                    productOwner: "The great one, God",
+            newTeamDialog() {
+                this.$.newTeam.open();
+            }
+
+            deleteDialog() {
+                this.$.deleteDialog.open();
+            }
+
+            destroyTeam(e) {
+                this.$.putUser.url = "/users/";
+                this.$.putUser.body = {
+                    "team": e.target.myObject.teamName
                 };
-                this.$.createTeam.generateRequest();
+                this.$.putUser.generateRequest();
+                this.$.deleteTeam.body = {
+                    "_id": e.target.myObject._id
+                };
+                this.$.deleteTeam.generateRequest()
             }
 
-            teste(e) {
-                console.log(e.detail.xhr)
+            searchUsers(string) {
+                if (!string) {
+                    return;
+                } else {
+                    string = string.toLowerCase();
+                    return function (user) {
+                        var userString = user.lastName.toLowerCase() + " " + user.firstName.toLowerCase();
+                        return (userString.indexOf(string) != -1);
+                    };
+                }
+            }
+            searchUser(string) {
+                if (!string) {
+                    return;
+                } else {
+                    string = string.toLowerCase();
+                    return function (user) {
+                        var userString = user.lastName.toLowerCase() + " " + user.firstName.toLowerCase();
+                        return (userString.indexOf(string) != -1);
+                    };
+                }
             }
 
+            selectTeam(e) {
+                this.$.selectedTeam.url = "/teams/" + e.target.id;
+                this.$.selectedTeam.generateRequest();
+            }
+
+            addUser(e) {
+                if (this.selectedTeam === undefined) {
+                    this.$.selectTeamToast.open();
+                } else if (e.target.myObject.team != null) {
+                    this.$.addUserToast.open();
+                } else {
+                    this.$.updateTeam.body = e.target.myObject;
+                    this.$.updateTeam.generateRequest();
+                    this.$.putUser.url = "/users/" + e.target.myObject._id;
+                    this.$.putUser.body = {
+                        "team": this.selectedTeam.teamName
+                    }
+                    this.$.putUser.generateRequest();
+                }
+
+            }
+
+            removeUser(e) {
+                this.$.updateTeam.url = "/teams/delete/" + this.selectedTeam._id;
+                this.$.updateTeam.body = {
+                    "_id": e.target.myObject._id
+                };
+                this.$.putUser.url = "/users/" + e.target.myObject._id;
+                this.$.putUser.body = {
+                    "team": null
+                };
+                this.$.putUser.generateRequest();
+                this.$.updateTeam.generateRequest();
+            }
+
+            updateTeam() {
+                var arr = [];
+                var obj = {};
+                Polymer.dom(this.root).querySelectorAll('.tId').forEach(function (item) {
+                    arr.push([item.id, item.value])
+                });
+                arr.forEach(function (data) {
+                    obj[data[0]] = data[1]
+                });
+                this.$.updateTeamInfo.body = obj;
+                this.$.updateTeamInfo.generateRequest();
+            }
+
+            postTeam(e) {
+                if (this.$.teamName.value === undefined || this.$.teamName.invalid === true) {
+                    this.$.teamName.invalid = true;
+                } else {
+                    var arr = [];
+                    var obj = {};
+                    Polymer.dom(this.root).querySelectorAll('.newTeamForm').forEach(function (item) {
+                        arr.push([item.id, item.value])
+                    });
+                    arr.forEach(function (data) {
+                        obj[data[0]] = data[1]
+                    });
+                    this.$.postTeam.body = obj;
+                    this.$.postTeam.generateRequest();
+                }
+            }
         }
 
         window.customElements.define(MyTeamSettings.is, MyTeamSettings);
