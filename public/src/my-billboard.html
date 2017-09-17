@@ -25,10 +25,10 @@
         </style>
         <firebase-auth id="auth" user="{{authUser}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
         </firebase-auth>
+        <iron-ajax id="getUser" url="/users/[[currentUser.uid]]" method="get" handle-as="json" last-response="{{currentUser}}" auto></iron-ajax>
         <iron-ajax id="postAjax" method="POST" url="/post" handle-as="json" body="" content-type="application/json" last-response="{{postResponse}}" on-response="init"></iron-ajax>
-        <iron-ajax id="getAjax" url="/post" method="get" handle-as="json" last-response="{{posts}}" auto></iron-ajax> 
-
-
+        <iron-ajax id="getAjax" url="/post" method="get" handle-as="json" last-response="{{posts}}" auto></iron-ajax>
+        
 
         <paper-card id="mainCard" class="main-card" heading="{{posts.0.title}}" image="" elevation="1" animated-shadow="false">
             <div class="card-content">

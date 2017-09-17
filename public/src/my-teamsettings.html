@@ -10,8 +10,6 @@
                 display: block;
                 padding: 10px;
             }
-
-            
         </style>
 
         <div class="page-card">
@@ -114,7 +112,7 @@
             </div>
         </div>
 
-        <paper-dialog id="mgmtDialog" opened>
+        <paper-dialog id="mgmtDialog">
             <div class="dialog-header">
                 <div>
                     User Management
@@ -132,10 +130,10 @@
                         </div>
                         <div class="users-overflow">
                             <template is="dom-if" if="{{!item.isAdmin}}">
-                                <iron-icon class="hoverable blue" my-object="{{item}}" icon="star-border"></iron-icon>
+                                <iron-icon class="hoverable blue" my-object="{{item}}" icon="star-border" on-tap="toggleAdmin"></iron-icon>
                             </template>
                             <template is="dom-if" if="{{item.isAdmin}}">
-                                <iron-icon class="hoverable blue" my-object="{{item}}" icon="star"></iron-icon>
+                                <iron-icon class="hoverable blue" my-object="{{item}}" icon="star" on-tap="toggleAdmin"></iron-icon>
                             </template>
                             {{item.email}}
                         </div>
@@ -247,13 +245,29 @@
             }
 
             destUser(e) {
-                console.log(e.target.myObject._id)
                 this.$.deleteUser.body = {
                     "_id": e.target.myObject._id
                 };
                 this.$.deleteUser.generateRequest();
                 this.init();
             }
+
+            toggleAdmin(e) {
+                var user = e.target.myObject
+                this.$.putUser.url = "/users/" + user._id;
+                if (user.isAdmin === false) {
+                    this.$.putUser.body = {
+                        "isAdmin": true
+                    };
+                } else {
+                    this.$.putUser.body = {
+                        "isAdmin": false
+                    };
+                }
+                this.$.putUser.generateRequest();
+            }
+
+
 
             clearTeam(e) {
                 this.$.putUser.url = "/users/" + e.target.myObject._id;
